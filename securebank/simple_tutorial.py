@@ -15,11 +15,11 @@ def hello_world():
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     # Get JSON data from the request
-    data = request.get_json()
+    input_data = request.get_json()
 
     # Instantiate modules.model.Model object
 
-    # Call modules.model.Model.Predict
+    # Call modules.model.Model.predict(input_data)
 
     return "No prediction" 
 
