@@ -4,6 +4,9 @@ import pandas as pd
 
 
 class Model():
+    """
+    You will need to implement your own Model class.
+    """
 
     def __init__(self, model_type="random"):
         self.model_type = model_type

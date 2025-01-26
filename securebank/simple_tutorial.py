@@ -11,5 +11,18 @@ def hello_world():
     """
     return "Hello World!"
 
+# Modify for Assignment 2 and Final Case Study
+@app.route('/predict', methods=['GET', 'POST'])
+def predict():
+    # Get JSON data from the request
+    data = request.get_json()
+
+    # Instantiate modules.model.Model object
+
+    # Call modules.model.Model.Predict
+
+    return "No prediction" 
+
+
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)
