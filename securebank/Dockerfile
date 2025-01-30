@@ -1,5 +1,8 @@
 # Use the official Ubuntu 20.04 base image
-FROM ubuntu:20.04
+# FROM ubuntu:20.04
+
+# ...or use python:3.9-slim for a lightweight alternative
+FROM python:3.9-slim
 
 # Update the package lists and install Python and Pip
 RUN apt-get update && apt-get install -y python3 python3-pip
@@ -18,3 +21,5 @@ EXPOSE 5000
 
 # Run app.py when the container launches
 CMD ["python3", "simple_tutorial.py"]
+
+# NOTE: You may leverage a Docker compose workflow; however, these 
