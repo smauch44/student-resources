@@ -48,25 +48,23 @@ class Preprocessing:
         - OpenCV VideoCapture Documentation: 
           https://docs.opencv.org/4.x/dd/d43/tutorial_py_video_display.html
         """
+        # TASK 1: Modify file to yield only every `drop_rate`-th frame.
+        # HINT: When running in Docker avoid using:
+        # -----------------------------
+        # cv.imshow('frame', gray)
+        # if cv.waitKey(1) == ord('q'):
+        #     break
+        # -----------------------------
+        # The standard Docker Engine does not support graphic displays, 
+        # unless configured to do so.
+
         cap = cv2.VideoCapture(self.filename)
-        frame_count = 0
 
         if not cap.isOpened():
             raise ValueError(f"Error: Unable to open video file '{self.filename}'.")
 
         while cap.isOpened():
             ret, frame = cap.read()
-
-            # TASK 1: Modify file to yield only every `drop_rate`-th frame.
-            # HINT: When running in Docker avoid using:
-            # -----------------------------
-            # cv.imshow('frame', gray)
-            # if cv.waitKey(1) == ord('q'):
-            #     break
-            # -----------------------------
-            # The standard Docker Engine does not support graphic displays, 
-            # unless configured to do so.
-
-            frame_count += 1
+            yield frame
 
         cap.release()
