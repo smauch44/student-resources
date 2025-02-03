@@ -39,9 +39,9 @@ class Preprocessing:
 
         **Usage Example:**
         ```python
-        video_processor = Preprocessing("video.mp4", drop_rate=5)
+        video_processor = Preprocessing("video.mp4", drop_rate=10)
         for frame in video_processor.capture_video():
-            process_frame(frame)  # Custom processing function
+            process_frame(frame)  # Custom processing function (...think Detector Methods!)
         ```
 
         **Reference:**
