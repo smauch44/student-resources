@@ -110,3 +110,17 @@ class Detector:
 
         # Return these variables in order:
         # return bboxes, class_ids, confidence_scores, class_scores
+
+
+"""
+EXAMPLE USAGE:
+model = Detector()
+
+# Perform object detection on the current frame
+predictions = self.detector.predict(frame)
+
+# Extract bounding boxes, class IDs, confidence scores, and class-specific scores
+bboxes, class_ids, confidence_scores, class_scores = self.detector.post_process(
+    predictions, score_threshold=0.5
+)
+"""
