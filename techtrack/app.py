@@ -14,13 +14,14 @@ class InferenceService:
     filters results using NMS, and outputs predictions.
     """
 
-    def __init__(self, stream: Preprocessing, detector: Detector, nms: NMS, drop_rate: int = 10) -> None:
+    def __init__(self, stream: Preprocessing, detector: Detector, nms: NMS, save_dir: str, drop_rate: int = 10) -> None:
         """
         Initializes the inference service.
 
         :param stream: An instance of the Preprocessing class for video capture.
         :param detector: An instance of the Model class for object detection.
         :param nms: An instance of the NMS class for filtering overlapping bounding boxes.
+        :param save_dir: Directory string where processed frames will be saved.
         :param drop_rate: The rate at which frames are dropped (default: 10).
 
         :ivar self.stream: Video stream processor.
@@ -31,6 +32,7 @@ class InferenceService:
         self.detector = detector
         self.nms = nms
         self.drop_rate = drop_rate
+        self.save_dir = save_dir
 
         print("[INFO] Inference Service initialized.")
 
@@ -77,7 +79,7 @@ class InferenceService:
         1. Captures frames from the video stream.
         2. Applies object detection to each frame.
         3. Filters the detected bounding boxes using Non-Maximum Suppression (NMS).
-        4. Prints the results.
+        4. Print per-frame detections (i.e, bounding box, class_id, object_score)
         5. Save frame with bounding box overlay to directory.
 
         **Processing Pipeline:**
