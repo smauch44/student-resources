@@ -9,7 +9,7 @@ class Detector:
     with a YOLO-based architecture.
     """
 
-    def __init__(self, weights_path: str, config_path: str, class_path: str) -> None:
+    def __init__(self, weights_path: str, config_path: str, class_path: str, score_threshold: float=.5) -> None:
         """
         Initializes the YOLO model by loading the pre-trained network and class labels.
 
@@ -30,6 +30,8 @@ class Detector:
 
         self.img_height: int = 0
         self.img_width: int = 0
+
+        self.score_threshold = score_threshold
 
     def predict(self, preprocessed_frame: np.ndarray) -> List[np.ndarray]:
         """
@@ -63,7 +65,7 @@ class Detector:
         # return outputs
 
     def post_process(
-        self, predict_output: List[np.ndarray], score_threshold: float
+        self, predict_output: List[np.ndarray]
     ) -> Tuple[List[List[int]], List[int], List[float], List[np.ndarray]]:
         """
         Processes the raw YOLO model predictions and filters out low-confidence detections.

@@ -115,19 +115,19 @@ if __name__ == "__main__":
     # Initialize Video Processing
     VIDEO_SOURCE = "udp://127.0.0.1:23000"
     print(f"[INFO] Initializing video stream from source: {VIDEO_SOURCE}")
-    stream = Preprocessing(VIDEO_SOURCE)
+    stream = Preprocessing(VIDEO_SOURCE, drop_rate=60)
 
     # Initialize Model
     WEIGHTS_PATH = "storage/yolo_models/yolov4-tiny-logistics_size_416_1.weights"
     CONFIG_PATH = "storage/yolo_models/yolov4-tiny-logistics_size_416_1.cfg"
     CLASS_NAMES_PATH = "storage/yolo_models/logistics.names"
+    SCORE_THRESHOLD = 0.5
 
     print("[INFO] Loading YOLO Model...")
-    model = Detector(WEIGHTS_PATH, CONFIG_PATH, CLASS_NAMES_PATH)
+    model = Detector(WEIGHTS_PATH, CONFIG_PATH, CLASS_NAMES_PATH, SCORE_THRESHOLD)
     print("[INFO] Model loaded successfully.")
 
     # Initialize NMS
-    SCORE_THRESHOLD = 0.5
     IOU_THRESHOLD = 0.4
     print("[INFO] Initializing Non-Maximum Suppression...")
     nms = NMS(SCORE_THRESHOLD, IOU_THRESHOLD)
