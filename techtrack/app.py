@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     # Create and run inference service
     print("[INFO] Starting Inference Service loop...")
-    service = InferenceService(stream, model, nms)
+    service = InferenceService(stream, model, nms, save_dir='output')
     service.run()
 
     print("[INFO] Inference Service terminated.")
