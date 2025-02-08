@@ -18,7 +18,7 @@ class HardNegativeMiner:
     """
     A class to mine hard negative examples for a given model.
     
-    NOTE: DO NOT change this implementation! 
+    NOTE: DO NOT change this implementation! It's already done for you.
 
     Attributes:
         model: The model used for prediction.
