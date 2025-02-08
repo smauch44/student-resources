@@ -98,7 +98,7 @@ class Loss:
         Compute the YOLO loss components.
 
         Internal Process:
-        1. Extracts predictions and annotations.
+        1. Extracts predictions and annotations of a single image/frame.
         2. Iterates through annotations to compute localization, confidence, and class loss.
         3. Computes total loss using predefined weighting factors.
 
@@ -119,7 +119,7 @@ class Loss:
         #         (or confidence) and classification loss.
         #         This method will be called in the HardNegativeMiner class.
         #         ----------------------------------------------------------
-        #         For simplicity complete use get_predictions(), get_annotations().
+        #         HINT: For simplicity complete use get_predictions(), get_annotations().
         #         You may add class methods to improve the readability of this code. 
         #         For your convenience, cross_entropy_loss() is already implemented for you.
 
