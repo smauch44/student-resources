@@ -18,7 +18,7 @@ class Augmenter:
     - Brightness and contrast adjustments: i.e., def change_brightness(**kwargs)
         - HINT: you may use cv2.addWeighted()
 
-    Note: These methods uses **kwargs to accept arbitrary keyword arguments,
+    NOTE: These methods uses **kwargs to accept arbitrary keyword arguments,
     but explicit parameter definitions improve clarity and usability.
     - "**kwargs" reference: https://www.geeksforgeeks.org/args-kwargs-python/
 
@@ -27,9 +27,19 @@ class Augmenter:
     """
 
     ## TASK 1: Complete the five augmenter class methods. 
-    #          This class is used to transform data necessary for training TechTrack's models.
-    #          Imagine that the output of `self.transform()` is fed directly to train the model.
-    #          You will define your own keywords for "**kwargs".
+    #          - This class is used to transform data necessary for training TechTrack's models.
+    #          - Imagine that the output of `self.transform()` is fed directly to train the model.
+    #          - You will define your own keywords for "**kwargs".
+    #          --------------------------------------------------------------------------------
+    #          Create your own augmentation method. Use the same structure as the format used below.
+    #          For example,
+    #
+    #          def your_custom_transformation(**kwargs):
+    #              # your process
+    #              return ...
+    #
+    #          Name this method appropriately based on its capability. And add docstrings to 
+    #          describe its process.
     #          --------------------------------------------------------------------------------
     #          Provide a demonstration and visualizations of these methods in 
     #          `techtrack/notebooks/augmentation.ipynb`.
