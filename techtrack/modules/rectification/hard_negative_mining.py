@@ -28,7 +28,7 @@ class HardNegativeMiner:
         table: DataFrame to store the results.
     """
 
-    def __init__(self, model: Detector, nms: NMS, measure: Loss, dataset_dir: str):
+    def __init__(self, model: Detector, measure: Loss, dataset_dir: str):
         """
         Initialize the HardNegativeMiner with model, nms, measure, and dataset directory.
 
@@ -44,7 +44,6 @@ class HardNegativeMiner:
             dataset_dir: Directory containing the dataset.
         """
         self.model = model
-        self.nms = nms
         self.measure = measure
         self.dataset_dir = dataset_dir
         self.table = pd.DataFrame(columns=['annotation_file', 'image_file'] + self.measure.columns)
