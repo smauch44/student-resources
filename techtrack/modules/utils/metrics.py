@@ -21,7 +21,7 @@ def calculate_map_x_point_interpolated(precision_recall_points, num_classes, num
         points = sorted(points, key=lambda x: x[1], reverse=True)
         
         interpolated_precisions = []
-        for recall_threshold in [j * 0.1 for j in range(num_interpolated_points)]:
+        for recall_threshold in [j * 1./(num_interpolated_points-1) for j in range(num_interpolated_points)]:
             # Find all precisions with recall greater than or equal to the threshold
             possible_precisions = [p for r, p in points if r >= recall_threshold]
             
