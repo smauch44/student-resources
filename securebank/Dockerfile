@@ -22,4 +22,4 @@ EXPOSE 5000
 # Run app.py when the container launches
 CMD ["python3", "simple_tutorial.py"]
 
-# NOTE: You may leverage a Docker compose workflow; however, these 
+# NOTE: You may leverage a Docker compose workflow
