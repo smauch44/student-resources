@@ -12,7 +12,7 @@ class Loss:
         lambda_noobj (float): Weighting factor for no object confidence loss.
     """
 
-    def __init__(self, iou_threshold=0.5, lambda_coord=0.5, lambda_noobj=0.5, num_classes=20):
+    def __init__(self, iou_threshold=0.5, lambda_coord=0.5, lambda_obj=0.5, lambda_noobj=0.5, lambda_cls=0.5, num_classes=20):
         """
         Initialize the Loss object with the given parameters.
 
@@ -23,10 +23,14 @@ class Loss:
         Args:
             num_classes (int): Number of classes.
             lambda_coord (float): Weighting factor for localization loss.
+            lambda_obj (float): Weighting factor for objectness loss.
             lambda_noobj (float): Weighting factor for no object confidence loss.
+            lambda_cls (float): Weighting factor for classification loss.
         """
         self.num_classes = num_classes
         self.lambda_coord = lambda_coord
+        self.lambda_cls = lambda_cls
+        self.lambda_obj = lambda_obj
         self.lambda_noobj = lambda_noobj
         self.columns = [
             'total_loss', 
