@@ -12,11 +12,7 @@ def calculate_iou(boxA, boxB):
 
     The computation is performed as follows:
       1. Extract the x and y coordinates along with width and height for both bounding boxes.
-      2. Determine the coordinates of the intersection rectangle:
-         - The left coordinate (xA) is the maximum of the two boxes' left coordinates.
-         - The top coordinate (yA) is the maximum of the two boxes' top coordinates.
-         - The right coordinate (xB) is the minimum of the right boundaries (x + width) of the two boxes.
-         - The bottom coordinate (yB) is the minimum of the bottom boundaries (y + height) of the two boxes.
+      2. Determine the coordinates of the intersection rectangle
       3. Compute the width and height of the intersection region as the difference between these coordinates.
       4. If the computed width or height is negative, it indicates no overlap; in such cases, the intersection area is set to zero.
       5. Calculate the area of the intersection region by multiplying the width and height.
@@ -51,9 +47,7 @@ def evaluate_detections(boxes, classes, scores, cls_scores, gt_boxes, gt_classes
       1. Extract detection and ground truth data.
       2. Compute an IoU (Intersection over Union) matrix between each detected box and each ground truth box.
       3. For each detection, determine the maximum IoU with any ground truth box.
-      4. Identify valid matches:
-         - A detection is considered a match if its IoU with a ground truth box is greater than 
-           the specified IoU threshold and equals the maximum IoU for that detection.
+      4. Identify valid matches.
       5. Assign prediction scores and true labels for:
          - True Positives (TP)
          - False Negatives (FN)
@@ -109,8 +103,7 @@ def evaluate_detections(boxes, classes, scores, cls_scores, gt_boxes, gt_classes
     y_true : list
         A list of true labels corresponding to each detection or ground truth match. For detections that match
         a ground truth box, the true label is taken from the ground truth. For false negatives (missed detections),
-        the corresponding ground truth label is added. For false positives (detections with no matching ground truth),
-        a background label (20) is assigned.
+        the corresponding ground truth label is added.
     pred_scores : list
         A list of predicted scores corresponding to the labels in `y_true`. The scores are derived based on the
         selected evaluation type ("objectness", "class_scores", or "combined"). Dummy scores are assigned for false negatives.
@@ -139,7 +132,7 @@ def evaluate_detections(boxes, classes, scores, cls_scores, gt_boxes, gt_classes
     y_true = []
     pred_scores = []
 
-    ### Task 2: Evaluate detections by matching predicted bounding boxes 
+    ### Task 1: Evaluate detections by matching predicted bounding boxes 
     #           with ground truth boxes and generate corresponding true 
     #           labels and prediction scores for further evaluation (e.g., 
     #           computing mAP).
@@ -224,7 +217,7 @@ def calculate_precision_recall_curve(y_true, pred_scores, num_classes=20):
     recall = {}
     thresholds = {}
 
-    ### Task 3: Compute the precision-recall curve for each class 
+    ### Task 2: Compute the precision-recall curve for each class 
     #           in a multi-class classification task. 
     #           Notes
     #           -----
