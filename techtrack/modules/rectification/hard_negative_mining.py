@@ -30,7 +30,7 @@ class HardNegativeMiner:
 
     def __init__(self, model: Detector, measure: Loss, dataset_dir: str):
         """
-        Initialize the HardNegativeMiner with model, nms, measure, and dataset directory.
+        Initialize the HardNegativeMiner with model, measure, and dataset directory.
 
         Internal Process:
         1. The model, NMS, and loss measure objects are stored as attributes.
@@ -39,7 +39,6 @@ class HardNegativeMiner:
 
         Args:
             model: The model used for prediction.
-            nms: Non-maximum suppression object.
             measure: Measure to evaluate predictions.
             dataset_dir: Directory containing the dataset.
         """
