@@ -127,7 +127,9 @@ def evaluate_detections(boxes, classes, scores, cls_scores, gt_boxes, gt_classes
     >>> print(y_true)
     [0, 1, ...]
     >>> print(pred_scores)
-    [0.95, 0.88, ...]
+    [[0.95, 0.88, ...],
+     [0.20, 0.80, ...],
+     [...., ...., ...]]
     """
     y_true = []
     pred_scores = []
