@@ -2,43 +2,50 @@ import numpy as np
 import pickle
 import faiss
 
-
 class FaissBruteForce:
     """
-    A brute-force FAISS index for storing embeddings and their associated metadata.
+    A brute-force FAISS index for storing embeddings and their associated metadata,
+    supporting Euclidean, Cosine, and Dot Product distance measures.
     
     Attributes:
         dim (int): The dimensionality of the embeddings.
-        embeddings (list): A list to store numpy array representations of embeddings.
         metadata (list): A list to store metadata corresponding to each embedding.
-        index (faiss.IndexFlat): A FAISS flat index initialized with the specified embedding dimension.
+        metric (str): The distance metric to use: 'euclidean', 'cosine', or 'dot_product'.
+        index (faiss.IndexFlat): A FAISS flat index initialized based on the specified metric.
     """
 
-    def __init__(self, dim):
+    def __init__(self, dim, metric='euclidean'):
         """
         Initializes the FaissBruteForce index.
         
-        This method sets up internal storage for embeddings and metadata and creates a FAISS flat index.
-        
         Parameters:
             dim (int): The dimensionality of the embeddings.
+            metric (str): Distance metric to use. Options are 'euclidean', 'cosine', or 'dot_product'.
         """
         self.dim = dim
-        self.metadata = []    # Will store associated metadata.
-        self.index = faiss.IndexFlat(dim)
+        self.metadata = []  # Will store associated metadata.
+        self.metric = metric.lower()
+
+        if self.metric == 'euclidean':
+            self.index = faiss.IndexFlatL2(dim)
+        elif self.metric in ['cosine', 'dot_product']:
+            # Both cosine and dot_product use the inner-product index.
+            self.index = faiss.IndexFlatIP(dim)
+        else:
+            raise ValueError("Unsupported metric. Use 'euclidean', 'cosine', or 'dot_product'.")
 
     def add_embeddings(self, embeddings, metadata):
         """
         Adds new embeddings and their associated metadata to the index.
         
         Parameters:
-            new_embeddings (list or np.ndarray): A list of embeddings, where each embedding is an array-like
+            embeddings (list or np.ndarray): A list of embeddings, where each embedding is an array-like
                 of length `dim`.
-            new_metadata (list): A list of metadata corresponding to each embedding.
+            metadata (list): A list of metadata corresponding to each embedding.
         
         Raises:
             ValueError: If an embedding does not match the specified dimensionality.
-            ValueError: If the lengths of new_embeddings and new_metadata do not match.
+            ValueError: If the number of embeddings and metadata entries do not match.
         """
         if len(embeddings) != len(metadata):
             raise ValueError("The number of embeddings must match the number of metadata entries.")
@@ -48,15 +55,20 @@ class FaissBruteForce:
             if emb.shape[0] != self.dim:
                 raise ValueError(f"Embedding has dimension {emb.shape[0]}, expected {self.dim}.")
             self.metadata.append(meta)
-            # Add the embedding to the FAISS index.
-            self.index.add(np.expand_dims(emb.astype(np.float32), axis=0))
+            vector = emb.astype(np.float32).reshape(1, -1)
+            if self.metric == 'cosine':
+                # Normalize vector so that inner product corresponds to cosine similarity.
+                faiss.normalize_L2(vector)
+            # For 'euclidean' and 'dot_product', the vector is added as is.
+            self.index.add(vector)
 
-    def get_metadata(self, index):
+
+    def get_metadata(self, idx):
         """
         Retrieves the metadata associated with a particular embedding index.
         
         Parameters:
-            index (int): The index of the embedding.
+            idx (int): The index of the embedding.
         
         Returns:
             The metadata associated with the embedding.
@@ -64,9 +76,9 @@ class FaissBruteForce:
         Raises:
             IndexError: If the index is out of range.
         """
-        if index < 0 or index >= len(self.metadata):
+        if idx < 0 or idx >= len(self.metadata):
             raise IndexError("Index out of bounds.")
-        return self.metadata[index]
+        return self.metadata[idx]
 
     def save(self, filepath):
         """
@@ -97,8 +109,9 @@ class FaissBruteForce:
 if __name__ == "__main__":
     # Example usage of FaissBruteForce class.
 
-    # Initialize a FaissBruteForce index with embedding dimension 4.
-    index = FaissBruteForce(dim=4)
+    # Choose the metric: 'euclidean', 'cosine', or 'dot_product'
+    metric = 'cosine'
+    index = FaissBruteForce(dim=4, metric=metric)
 
     # Create some dummy embeddings and corresponding metadata.
     embeddings = [
@@ -115,12 +128,12 @@ if __name__ == "__main__":
     # Add the embeddings and metadata to the index.
     index.add_embeddings(embeddings, identity_metadata)
 
-    # Let's search the index with a query vector.
-    query = np.array([[0.1, 0.2, 0.3, 0.4]], dtype=np.float32)
+    # Define a query vector.
+    query = [0.1, 0.2, 0.3, 0.4]
     k = 2  # number of nearest neighbors to retrieve
-    distances, indices, meta_results = index.index.search(query, k), None, None
-    # The FAISS search directly returns distances and indices.
-    distances, indices = index.index.search(query, k)
+
+    # Perform the search using our class method.
+    distances, indices = index.search(query, k)
     meta_results = [index.get_metadata(int(i)) for i in indices[0]]
     
     print("Query Vector:", query)
@@ -136,7 +149,3 @@ if __name__ == "__main__":
     # Load the index from disk.
     loaded_index = FaissBruteForce.load(filepath)
     print("Loaded Metadata for index 0:", loaded_index.get_metadata(0))
-
-
-
-
