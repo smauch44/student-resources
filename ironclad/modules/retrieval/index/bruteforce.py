@@ -26,7 +26,7 @@ class FaissBruteForce:
         self.metadata = []  # Will store associated metadata.
         self.metric = metric.lower()
 
-        if self.metric == 'euclidean':
+        if self.metric in ['euclidean', 'minkowski']:
             self.index = faiss.IndexFlatL2(dim)
         elif self.metric in ['cosine', 'dot_product']:
             # Both cosine and dot_product use the inner-product index.
