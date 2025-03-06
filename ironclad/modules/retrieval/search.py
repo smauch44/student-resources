@@ -1,6 +1,4 @@
 import numpy as np
-import faiss
-import scipy
 
 class FaissSearch:
     def __init__(self, faiss_index, metric='euclidean', p=3):
