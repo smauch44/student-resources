@@ -4,3 +4,4 @@ torchvision
 facenet-pytorch
 PIL
 faiss-cpu
+scikit-learn
