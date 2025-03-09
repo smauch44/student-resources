@@ -13,7 +13,7 @@
 <div align="center">
     <figure>
     <img src="images/example1.jpg">
-    <figcaption>Figure 1: Dog.</figcaption>
+    <p><em>Figure 1:</em> Dog.</p>
     </figure>
 </div>
 
@@ -28,7 +28,7 @@
 <div align="center">
     <figure>
     <img src="images/example2.jpg">
-    <figcaption>Figure 2: Stars.</figcaption>
+    <p><em>Figure 2:</em> Stars.</p>
     </figure>
 </div>
 
@@ -44,6 +44,6 @@
 <div align="center">
     <figure>
     <img src="images/example3.jpg">
-    <figcaption>Figure 3: Landscape.</figcaption>
+    <p><em>Figure 3:</em> Landscape.</p>
     </figure>
 </div>
