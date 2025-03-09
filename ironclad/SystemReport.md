@@ -1,6 +1,6 @@
 # Analysis of IronClad System Design
 - What is the objective?
-- What are the design decisions? Why are they significant to the stated requirements?
+- What are your proposed design decisions? Why are they significant to the stated requirements?
 
 ---
 
