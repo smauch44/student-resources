@@ -10,6 +10,11 @@
 - Draw an unambigious conclusion to your system design.
     - For example: "Because our results show ..., we recommend to design the system ..."
 
+<figure>
+  <img src="./images/example1.png">
+  <figcaption>Figure 1: Dog.</figcaption>
+</figure>
+
 ---
 
 ### [INSERT ANALYSIS 2 TITLE]
@@ -18,6 +23,12 @@
 - Draw an unambigious conclusion to your system design.
     - For example: "Because our results show ..., we recommend to design the system ..."
 
+<figure>
+  <img src="./images/example2.png">
+  <figcaption>Figure 2: Stars.</figcaption>
+</figure>
+
+
 ---
 
 ### [INSERT ANALYSIS 3 TITLE]
@@ -25,3 +36,8 @@
 - Summarize your results using graphs, tables, etc.
 - Draw an unambigious conclusion to your system design.
     - For example: "Because our results show ..., we recommend to design the system ..."
+
+<figure>
+  <img src="./images/example3.png">
+  <figcaption>Figure 3: Landscape.</figcaption>
+</figure>
