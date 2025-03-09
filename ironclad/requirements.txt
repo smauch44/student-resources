@@ -5,3 +5,6 @@ facenet-pytorch
 PIL
 faiss-cpu
 scikit-learn
+matplotlib
+seaborn
+numpy
