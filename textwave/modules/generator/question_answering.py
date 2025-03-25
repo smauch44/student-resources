@@ -62,8 +62,7 @@ class QA_Generator:
         return chat_response.choices[0].message.content
     
 if __name__ == "__main__":
-    # Example Usage
-    API_KEY = "your_api_key_here"  # Replace with your actual Mistral API key
+    API_KEY = os.environ["MISTRAL_API_KEY"] 
 
     generator = QA_Generator(api_key=API_KEY)
 
