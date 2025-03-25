@@ -4,7 +4,6 @@
 
 # TODO: Add you default parameters here
 # For example: 
-
 STORAGE_DIRECTORY = "storage/"
 CHUNKING_STRATEGY = 'fixed-length' # or 'sentence'
 EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
