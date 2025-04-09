@@ -36,7 +36,7 @@ def generate_answer():
 
     This endpoint accepts a POST request with a JSON body containing the "query" field.
     It preprocesses and indexes the corpus if necessary, retrieves top-k relevant documents,
-    reranks them using a hybrid model, and uses a language model to generate a final answer.
+    and uses a language model to generate a final answer.
 
     Example curl command:
     curl -X POST http://localhost:5000/generate \
@@ -46,7 +46,7 @@ def generate_answer():
     :return: JSON response containing the generated answer.
     """
     #######################################
-    # TODO: Implement initialize()
+    # TODO: Implement generate_answer()
     #######################################
 
     return jsonify({"answer": answer})
