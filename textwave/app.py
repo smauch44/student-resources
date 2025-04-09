@@ -27,3 +27,30 @@ def initialize_index():
 
 
 
+
+@app.route("/generate", methods=["POST"])
+def generate_answer():
+    """
+    Generate an answer to a given query by running the retrieval and reranking pipeline.
+
+    This endpoint accepts a POST request with a JSON body containing the "query" field.
+    It preprocesses and indexes the corpus if necessary, retrieves top-k relevant documents,
+    reranks them using a hybrid model, and uses a language model to generate a final answer.
+
+    :return: JSON response containing the generated answer.
+    """
+    #######################################
+    # TODO: Implement initialize()
+    #######################################
+
+    return jsonify({"answer": answer})
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
+
+
+
+
