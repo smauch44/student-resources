@@ -1,6 +1,9 @@
 import re
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
+import nltk
+nltk.download('wordnet')
+
 def process_text(text, use_stemming=False, use_lemmatization=False):
     """
     Process and normalize input text by tokenizing and optionally applying stemming and lemmatization.
