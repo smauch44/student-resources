@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 # TODO: Add your import statements
 
 
@@ -36,6 +37,11 @@ def generate_answer():
     This endpoint accepts a POST request with a JSON body containing the "query" field.
     It preprocesses and indexes the corpus if necessary, retrieves top-k relevant documents,
     reranks them using a hybrid model, and uses a language model to generate a final answer.
+
+    Example curl command:
+    curl -X POST http://localhost:5000/generate \
+         -H "Content-Type: application/json" \
+         -d '{"query": "What is the role of antioxidants in green tea?"}'
 
     :return: JSON response containing the generated answer.
     """
