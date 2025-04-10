@@ -8,3 +8,4 @@ numpy
 nltk
 qa-metrics
 Flask
+sklearn
