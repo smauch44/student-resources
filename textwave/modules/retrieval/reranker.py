@@ -4,6 +4,7 @@ import pickle
 from sympy import vectorize
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import pairwise_distances
 import torch
 import numpy as np
@@ -76,7 +77,13 @@ class Reranker:
 
         ### TODO: Complete this...
         
-        pass
+        if isinstance(relevance_scores, float):
+            relevance_scores = [relevance_scores]
+
+        sorted_indices = np.argsort(relevance_scores)[::-1]
+        ranked_docs = [context[i] for i in sorted_indices]
+        ranked_scores = [relevance_scores[i] for i in sorted_indices]
+        return ranked_docs, sorted_indices.tolist(), ranked_scores
 
 
 
@@ -92,7 +99,13 @@ class Reranker:
         :param distance_metric: Distance function to use (e.g., 'cosine', 'euclidean').
         :return: Tuple of (ranked documents, indices, similarity scores).
         """
-        pass
+        vectorizer = TfidfVectorizer()
+        tfidf_matrix = vectorizer.fit_transform([query] + context)
+        distances = pairwise_distances(tfidf_matrix[0:1], tfidf_matrix[1:], metric=distance_metric).flatten()
+        sorted_indices = np.argsort(distances)
+        ranked_docs = [context[i] for i in sorted_indices]
+        ranked_scores = [1 - distances[i] for i in sorted_indices]
+        return ranked_docs, sorted_indices.tolist(), ranked_scores
 
     def bow_rerank(self, query, context, distance_metric="cosine"):
         """
@@ -106,7 +119,14 @@ class Reranker:
         :param distance_metric: Distance function to use (e.g., 'cosine', 'euclidean').
         :return: Tuple of (ranked documents, indices, similarity scores).
         """
-        pass
+        vectorizer = CountVectorizer()
+        bow_matrix = vectorizer.fit_transform([query] + context)
+        distances = pairwise_distances(bow_matrix[0:1], bow_matrix[1:], metric=distance_metric).flatten()
+        sorted_indices = np.argsort(distances)
+        ranked_docs = [context[i] for i in sorted_indices]
+        ranked_scores = [1 - distances[i] for i in sorted_indices]
+        return ranked_docs, sorted_indices.tolist(), ranked_scores
+
 
 
     def hybrid_rerank(self, query, context, distance_metric="cosine", tfidf_weight=0.3):
@@ -122,7 +142,31 @@ class Reranker:
         :param tfidf_weight: Weight (0-1) assigned to TF-IDF score in final ranking.
         :return: Tuple of (ranked documents, indices, combined scores).
         """
-        pass
+        # Get TF-IDF scores (in original order)
+        tfidf_docs, tfidf_indices, tfidf_scores_raw = self.tfidf_rerank(query, context, distance_metric)
+        tfidf_scores = np.zeros(len(context))
+        for idx, score in zip(tfidf_indices, tfidf_scores_raw):
+            tfidf_scores[idx] = score
+
+        # Get Cross-Encoder scores (in original order)
+        ce_docs, ce_indices, ce_scores_raw = self.cross_encoder_rerank(query, context)
+        ce_scores = np.zeros(len(context))
+        for idx, score in zip(ce_indices, ce_scores_raw):
+            ce_scores[idx] = score
+
+        # Normalize both
+        tfidf_norm = (tfidf_scores - tfidf_scores.min()) / (tfidf_scores.max() - tfidf_scores.min() + 1e-5)
+        ce_norm = (ce_scores - ce_scores.min()) / (ce_scores.max() - ce_scores.min() + 1e-5)
+
+        # Weighted hybrid score
+        hybrid_scores = tfidf_weight * tfidf_norm + (1 - tfidf_weight) * ce_norm
+
+        # Final ranking
+        sorted_indices = np.argsort(hybrid_scores)[::-1]
+        ranked_docs = [context[i] for i in sorted_indices]
+        ranked_scores = [hybrid_scores[i] for i in sorted_indices]
+
+        return ranked_docs, sorted_indices.tolist(), ranked_scores
 
     def sequential_rerank(self, query, context, seq_k1, seq_k2, distance_metric="cosine"):
         """
@@ -138,7 +182,17 @@ class Reranker:
         :param distance_metric: Distance metric for TF-IDF.
         :return: Tuple of (ranked documents, indices, final relevance scores).
         """
-        pass
+        # Stage 1: TF-IDF filter
+        tfidf_docs, tfidf_indices, _ = self.tfidf_rerank(query, context, distance_metric)
+        top_k1_docs = tfidf_docs[:seq_k1]
+        top_k1_indices = tfidf_indices[:seq_k1]
+
+        # Stage 2: Cross-Encoder refine
+        ce_docs, ce_indices, ce_scores = self.cross_encoder_rerank(query, top_k1_docs)
+        final_docs = ce_docs[:seq_k2]
+        final_scores = ce_scores[:seq_k2]
+        final_indices = [top_k1_indices[i] for i in ce_indices[:seq_k2]]
+        return final_docs, final_indices, final_scores
 
 
 if __name__ == "__main__":
