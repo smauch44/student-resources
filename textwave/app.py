@@ -1,17 +1,92 @@
-from flask import Flask, request, jsonify
 # TODO: Add your import statements
+import os
+import sys
+from glob import glob
+from modules.extraction.preprocessing import DocumentProcessing
+from modules.extraction.embedding import Embedding
+from modules.retrieval.index.bruteforce import FaissBruteForce
+import pandas as pd
+
+from flask import Flask, request, jsonify
+from modules.retrieval.reranker import Reranker
+from modules.generator.question_answering import QA_Generator
 
 
+app = Flask(__name__)
 
+@app.route("/generate", methods=["POST"])
+def generate():
+    """
+    POST /generate
+    Request body (JSON):
+    {
+        "question": "What are the benefits of exercise?",
+        "k": 5,
+        "rerank_strategy": "hybrid"
+    }
+
+    Response (JSON):
+    {
+        "question": "...",
+        "top_chunks": [
+            {"text": "....", "score": 0.923},
+            ...
+        ],
+        "answer": "..."
+    }
+    """
+    try:
+        data = request.get_json()
+        question = data.get("question")
+        k = data.get("k", 5)
+        strategy = data.get("rerank_strategy", "tfidf")
+
+        if not question:
+            return jsonify({"error": "Missing 'question' in request body"}), 400
+
+        # Retrieve top-k (brute force)
+        top_k_chunks, top_k_metadata = faiss_index.search(question, top_k=k)
+
+        # Extract raw text chunks
+        context_chunks = [meta["text"] for meta in top_k_metadata]
+
+        # Apply reranking
+        reranker = Reranker(type=strategy)
+        ranked_chunks, _, scores = reranker.rerank(question, context_chunks)
+
+        # Prepare final top-k response
+        top_chunks = [
+            {"text": chunk, "score": round(score, 4)}
+            for chunk, score in zip(ranked_chunks, scores)
+        ]
+
+        # Generate final answer using top-ranked chunks
+        generator = QA_Generator()
+        answer = generator.generate_answer(question, [chunk["text"] for chunk in top_chunks])
+
+        return jsonify({
+            "question": question,
+            "top_chunks": top_chunks,
+            "answer": answer
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
 # TODO: Add you default parameters here
 # For example: 
 STORAGE_DIRECTORY = "storage/"
 CHUNKING_STRATEGY = 'fixed-length' # or 'sentence'
 EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
-# add more as needed...
+CHUNK_SIZE = 300
+OVERLAP_SIZE = 20
 
-
-def initialize_index():
+def initialize_index(
+    storage_path=STORAGE_DIRECTORY,
+    chunk_strategy=CHUNKING_STRATEGY,
+    chunk_size=CHUNK_SIZE,
+    overlap_size=OVERLAP_SIZE
+):
     """
     1. Parse through all the documents contained in storage/corpus directory
     2. Chunk the documents using either a'sentence' and 'fixed-length' chunking strategies (indicated by the CHUNKING_STRATEGY value):
@@ -24,39 +99,34 @@ def initialize_index():
     #######################################
     # TODO: Implement initialize()
     #######################################
-    pass
+    processor = DocumentProcessing()
+    model_name = os.environ.get("CURRENT_EMBEDDING_MODEL", EMBEDDING_MODEL)
+    embedder = Embedding(model_name=model_name)
+    index = FaissBruteForce(dim=384)
 
+    files = glob(os.path.join(storage_path, "*.txt.clean"))
 
+    for file_path in files:
+        # Chunk based on strategy
+        if chunk_strategy == "sentence":
+            chunks = processor.sentence_chunking(
+                file_path, num_sentences=chunk_size, overlap_size=overlap_size
+            )
+        else:
+            chunks = processor.fixed_length_chunking(
+                file_path, chunk_size=chunk_size, overlap_size=overlap_size
+            )
 
+        # Embed all chunks in batch
+        embeddings = embedder.encode(chunks)
+        metadata = [
+            {
+                "source": os.path.basename(file_path),
+                "text": chunk
+            }
+            for chunk in chunks
+        ]
 
-@app.route("/generate", methods=["POST"])
-def generate_answer():
-    """
-    Generate an answer to a given query by running the retrieval and reranking pipeline.
+        index.add_embeddings(embeddings, metadata)
 
-    This endpoint accepts a POST request with a JSON body containing the "query" field.
-    It preprocesses and indexes the corpus if necessary, retrieves top-k relevant documents,
-    and uses a language model to generate a final answer.
-
-    Example curl command:
-    curl -X POST http://localhost:5000/generate \
-         -H "Content-Type: application/json" \
-         -d '{"query": "What is the role of antioxidants in green tea?"}'
-
-    :return: JSON response containing the generated answer.
-    """
-    #######################################
-    # TODO: Implement generate_answer()
-    #######################################
-
-    return jsonify({"answer": answer})
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
-
-
-
-
-
+    return index
