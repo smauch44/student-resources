@@ -2,6 +2,7 @@ import os
 import time
 from mistralai import Mistral
 
+#export MISTRAL_API_KEY="nGB0lLOdxOM1ANyf2j3J8g5c13Agm6iH"
 class QA_Generator:
     """
     A question-answer generator that uses the Mistral API to generate answers
@@ -62,7 +63,7 @@ class QA_Generator:
         return chat_response.choices[0].message.content
     
 if __name__ == "__main__":
-    API_KEY = os.environ["MISTRAL_API_KEY"] 
+    API_KEY = os.environ["MISTRAL_API_KEY"]
 
     generator = QA_Generator(api_key=API_KEY)
 
