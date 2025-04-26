@@ -60,8 +60,6 @@ class Embedding:
 
 
 if __name__ == "__main__":
-    # You can try different sentence encoders here: 
-    # https://sbert.net/docs/sentence_transformer/pretrained_models.html
     
     embedding_model_name = 'all-MiniLM-L6-v2'
     embedding_model = Embedding(embedding_model_name)
