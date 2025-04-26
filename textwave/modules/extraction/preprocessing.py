@@ -2,6 +2,10 @@ import os
 import re
 from glob import glob
 import nltk
+nltk.download("punkt")
+nltk.download('punkt_tab')
+#exit()
+
 
 
 class DocumentProcessing:
@@ -107,13 +111,32 @@ class DocumentProcessing:
         #########################################
         # TODO: Implement fixed_length_chunking()
         #########################################
-        pass
+        text = self.__read_text_file(document_filename)
+
+        if isinstance(text, str):
+            text = self.trim_white_space(text)
+            chunks = []
+            i = 0
+            while i < len(text):
+                chunk = text[i:i + chunk_size]
+                if not chunk:
+                    break
+                chunks.append(chunk)
+                i += (chunk_size - overlap_size)
+            return chunks
+        return [text]
+
 
 
 if __name__ == "__main__":
     processing = DocumentProcessing()
 
-    # Example to split documents into sentence chunks
-    chunks = processing.sentence_chunking("storage/corpus/S08_set3_a1.txt.clean", num_sentences=5, overlap_size=3)
+    file_path = "storage/S08_set3_a1.txt.clean"
+    chunks = processing.sentence_chunking(file_path, num_sentences=5, overlap_size=3)
+
     for idx, chunk in enumerate(chunks):
         print(idx, chunk)
+
+
+
+        
